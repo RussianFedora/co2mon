@@ -32,13 +32,13 @@ Development files for USB CO2 Monitor devices.
 mkdir build
 cd build
 %cmake ..
-%make_build
+make %{?_smp_mflags}
 
 
 %install
 cd build
 rm -rf $RPM_BUILD_ROOT
-%make_install
+make DESTDIR=$RPM_BUILD_ROOT install
 mkdir -p %{buildroot}%{_udevrulesdir}
 %{__install} -p -m 644 ../udevrules/99-co2mon.rules %{buildroot}%{_udevrulesdir}
 
