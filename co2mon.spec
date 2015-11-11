@@ -1,3 +1,5 @@
+%define _udevrulesdir /usr/lib/udev/rules.d/
+
 Name:           co2mon
 Version:        2.1.0
 Release:        1%{?dist}
