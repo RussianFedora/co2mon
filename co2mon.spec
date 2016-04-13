@@ -1,8 +1,6 @@
-%define _udevrulesdir /usr/lib/udev/rules.d/
-
 Name:           co2mon
 Version:        2.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        CO2 monitor software
 
 License:        GPLv3+
@@ -11,7 +9,7 @@ Source0:        https://github.com/dmage/co2mon/archive/v%{version}.tar.gz
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
-BuildRequires:  hidapi-devel
+BuildRequires:  pkgconfig(hidapi-libusb)
 
 %description
 Software for USB CO2 Monitor devices.
@@ -38,13 +36,17 @@ make %{?_smp_mflags}
 %install
 cd build
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install
+%make_install
 mkdir -p %{buildroot}%{_udevrulesdir}
 %{__install} -p -m 644 ../udevrules/99-co2mon.rules %{buildroot}%{_udevrulesdir}
 
-%post -p /sbin/ldconfig
+%post
+/sbin/ldconfig
+%{udev_rules_update}
 
-%postun -p /sbin/ldconfig
+%postun
+/sbin/ldconfig
+%{udev_rules_update}
 
 %files
 %doc README.md
@@ -58,6 +60,9 @@ mkdir -p %{buildroot}%{_udevrulesdir}
 %{_includedir}/%{name}.h
 
 %changelog
+* Wed Apr 13 2016 vascom <vascom2@gmail.com> 2.1.0-2
+- Add udev post script
+
 * Wed Nov 11 2015 vascom <vascom2@gmail.com> 2.1.0-1
 - Update to 2.1.0
 - Added udev rule
