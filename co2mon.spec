@@ -10,6 +10,7 @@ Source0:        https://github.com/dmage/co2mon/archive/v%{version}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(hidapi-libusb)
+BuildRequires:  pkgconfig(udev)
 
 %description
 Software for USB CO2 Monitor devices.
