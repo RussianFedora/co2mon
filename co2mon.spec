@@ -1,16 +1,22 @@
+%global gitcommit_full 6a53ffa3c69418d999178e0ba0dddf01b043173f
+%global gitcommit %(c=%{gitcommit_full}; echo ${c:0:7})
+%global date 20190313
+
 Name:           co2mon
-Version:        2.1.0
-Release:        2%{?dist}
+Version:        2.1.1
+Release:        0.%{date}git%{gitcommit}.1%{?dist}
 Summary:        CO2 monitor software
 
 License:        GPLv3+
 URL:            https://github.com/dmage/co2mon
-Source0:        https://github.com/dmage/co2mon/archive/v%{version}.tar.gz
+Source0:        %{url}/tarball/%{gitcommit_full}
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(hidapi-libusb)
 BuildRequires:  pkgconfig(udev)
+
+Requires:       udev
 
 %description
 Software for USB CO2 Monitor devices.
@@ -24,43 +30,48 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 Development files for USB CO2 Monitor devices.
 
 %prep
-%setup -q
+%autosetup -n dmage-%{name}-%{gitcommit}
 
 
 %build
 mkdir build
-cd build
-%cmake ..
-make %{?_smp_mflags}
+pushd build
+    %cmake ..
+    %make_build
+popd
 
 
 %install
-cd build
-rm -rf $RPM_BUILD_ROOT
-%make_install
+pushd build
+    %make_install
+popd
+
 mkdir -p %{buildroot}%{_udevrulesdir}
-%{__install} -p -m 644 ../udevrules/99-co2mon.rules %{buildroot}%{_udevrulesdir}
+install -p -m 644 udevrules/99-%{name}.rules %{buildroot}%{_udevrulesdir}
 
-%post
-/sbin/ldconfig
-%{udev_rules_update}
+mkdir -p %{buildroot}%{_datadir}/%{name}
+cp -r graph %{buildroot}%{_datadir}/%{name}/
 
-%postun
-/sbin/ldconfig
-%{udev_rules_update}
 
 %files
 %doc README.md
 %license LICENSE
 %{_bindir}/co2mond
+%{_datadir}/%{name}
 %{_libdir}/*.so.*
-%{_udevrulesdir}/99-co2mon.rules
+%{_udevrulesdir}/99-%{name}.rules
 
 %files devel
 %{_libdir}/*.so
 %{_includedir}/%{name}.h
 
 %changelog
+* Tue Jun 11 2019 Vasiliy N. Glazov <vascom2@gmail.com> - 0-0.20190313git6a53ffa.1
+- Update to latest git
+
+* Fri Jul 20 2018 Vasiliy N. Glazov <vascom2@gmail.com> - 0-0.20180527git664378b
+- Update to latest git
+
 * Wed Apr 13 2016 vascom <vascom2@gmail.com> 2.1.0-2
 - Add udev post script
 
