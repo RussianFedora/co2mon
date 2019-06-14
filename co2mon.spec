@@ -4,7 +4,7 @@
 
 Name:           co2mon
 Version:        2.1.1
-Release:        0.%{date}git%{gitcommit}.1%{?dist}
+Release:        1.%{date}git%{gitcommit}%{?dist}
 Summary:        CO2 monitor software
 
 License:        GPLv3+
@@ -23,7 +23,6 @@ Software for USB CO2 Monitor devices.
 
 %package        devel
 Summary:        Include files for CO2 monitor software
-Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description    devel
@@ -58,7 +57,7 @@ cp -r graph %{buildroot}%{_datadir}/%{name}/
 %license LICENSE
 %{_bindir}/co2mond
 %{_datadir}/%{name}
-%{_libdir}/*.so.*
+%{_libdir}/*.so.1*
 %{_udevrulesdir}/99-%{name}.rules
 
 %files devel
@@ -66,6 +65,9 @@ cp -r graph %{buildroot}%{_datadir}/%{name}/
 %{_includedir}/%{name}.h
 
 %changelog
+* Fri Jun 14 2019 Vasiliy N. Glazov <vascom2@gmail.com> - 2.1.1-1.20190313git6a53ffa
+- Clean spec
+
 * Tue Jun 11 2019 Vasiliy N. Glazov <vascom2@gmail.com> - 0-0.20190313git6a53ffa.1
 - Update to latest git
 
